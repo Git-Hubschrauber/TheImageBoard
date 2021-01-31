@@ -1,0 +1,46 @@
+* {
+    margin: 0;
+    background: lightblue;
+    box-sizing: border-box;
+    position: relative;
+}
+
+header {
+    width: 100vw;
+    padding: 20px;
+    background: blue;
+    text-align: center;
+    justify-content: center;
+    display: flexbox;
+}
+
+.latest {
+    margin: 5vh 10vw;
+}
+
+#main {
+    display: grid;
+    grid-template-columns: 3fr 3fr 3fr;
+    grid-row: auto;
+    margin: 5vh 10vw;
+    justify-content: space-between;
+}
+
+.grid-item {
+    width: 25vw;
+    height: 40vh;
+    border: 1px solid black;
+    border-radius: 2%;
+}
+
+.grid-image {
+    width: 96%;
+    height: 85%;
+    background: blue;
+    margin: 2%;
+    border-radius: 2%;
+}
+
+.grid-title {
+    margin-left: 2%;
+}

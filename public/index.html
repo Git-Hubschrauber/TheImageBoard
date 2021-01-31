@@ -1,10 +1,30 @@
 <!doctype html>
 <html>
 <head>
-    <title></title>
+    <title>Imageboard</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+<header class="page-header">
+    <div>
+        <h1>MyImageBoard</h1>
+    </div>
+</header>
+
+<div>
+    <h1 class="latest">The latest images</h1>
+</div>
+<div id="main">
+    <div class="grid-item" v-if="images.length" v-for="each in images">
+        <img class="grid-image" v-bind:src=each.url>
+        
+        <h4 class="grid-title">{{each.title}}</h4>
+    </div>
+</div>
+
+
     <script src="/js/vue.js"></script>
     <script src="/js/axios.min.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 </html>
