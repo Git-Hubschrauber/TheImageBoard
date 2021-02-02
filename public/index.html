@@ -29,22 +29,22 @@
 
     <div></div>
     <div class="grid">
-        <div class="grid-item" v-if="images.length" v-for="each in images">
-            <img class="grid-image" v-bind:src=each.url>
-            <h4 class="grid-title">{{each.title}}</h4>
+        <div class="grid-item" v-if="images.length" v-for="each in images" v-bind:src=each.url @click="selectedImage = clickedImage" >
+            <img class="grid-image" v-bind:src=each.url >
+            <h4 class="grid-title" >{{each.title}} </h4>
         </div>
     </div>
 
-    <first-component v-if="showButtons" title="Hello Adobo" description="Lalelu"
-    @close = "closeMe">
-
+    <first-component v-if="selectedImage" :imageid="selectedImage" @close = "closeMe">
     </first-component>
 
 </div>
+
+
     <script type="text/x-template" id="modal">
-        <div class="component">
-            <h1 @click="closeModal">This is my first component</h1>
-            <h2>Hello {{name}}</h2>
+        <div class="showImage">
+            <button @click="closeModal">Close</button>
+            <h2>Hello</h2>
             <button @click="count1++">Click Me</button> Count1: {{count1}}
             <button @click="increaseCount">Click Me</button> Count2: {{count2}}
         </div>

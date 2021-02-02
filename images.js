@@ -24,10 +24,17 @@ module.exports.getNewImageInfo = (url) => {
     return images.query(q, params);
 };
 
-module.exports.getUrl = () => {
-    const q = `SELECT url FROM images`;
-    return images.query(q);
+//
+//
+//
+
+module.exports.getId = (url) => {
+    const q = `SELECT id FROM images WHERE url = ($1)`;
+    const params = [url];
+    return images.query(q, params);
 };
+
+//
 
 module.exports.getUsername = () => {
     const q = `SELECT username FROM images`;

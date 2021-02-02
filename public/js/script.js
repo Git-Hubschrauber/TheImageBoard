@@ -1,5 +1,3 @@
-console.log("hello");
-
 (function () {
     Vue.component("first-component", {
         template: "#modal",
@@ -10,10 +8,10 @@ console.log("hello");
                 count2: 0,
             };
         }, //end of data
-        props: ["title", "description"],
+        props: ["imageid"],
         mounted: function () {
-            console.log("component title: ", this.title);
-            console.log("component description: ", this.description);
+            console.log("component: ", this);
+            console.log("component description: ", this.imageid);
         },
         methods: {
             increaseCount: function () {
@@ -33,7 +31,7 @@ console.log("hello");
             description: "",
             username: "",
             file: null,
-            showButtons: false,
+            selectedImage: null,
         }, //data ends
 
         mounted: function () {
@@ -45,7 +43,7 @@ console.log("hello");
                 console.log("this/self inside axios", self);
                 console.log("response from images: ", response.data);
                 self.images = response.data;
-                console.log("self image: ", self.images);
+                console.log("self images: ", self.images);
             });
         },
 
@@ -71,6 +69,21 @@ console.log("hello");
             },
             closeMe: function () {
                 console.log("Close me");
+                this.$data.selectedImage = null;
+                console.log("Close this: ", this.$data);
+            },
+
+            clickedImage: function (e) {
+                let url = e.target.currentSrc;
+                let that = this;
+                console.log("image clicked: ", url);
+                let selectedImage = that.images.filter((x) => {
+                    if (x.url == url) {
+                        return x;
+                    }
+                })[0].id;
+                console.log("images: ", selectedImage);
+                return selectedImage;
             },
         },
     });
