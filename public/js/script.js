@@ -18,7 +18,7 @@
                 this.count2++;
             },
             closeModal: function () {
-                console.log("Close modal");
+                // console.log("Close modal");
                 this.$emit("close");
             },
         },
@@ -39,11 +39,11 @@
             // console.log("this outside axios", this);
             var self = this;
             axios.get("/images").then(function (response) {
-                console.log("this inside axios", this);
-                console.log("this/self inside axios", self);
-                console.log("response from images: ", response.data);
+                // console.log("this inside axios", this);
+                // console.log("this/self inside axios", self);
+                // console.log("response from images: ", response.data);
                 self.images = response.data;
-                console.log("self images: ", self.images);
+                // console.log("self images: ", self.images);
             });
         },
 
@@ -58,7 +58,7 @@
                 axios
                     .post("/upload", fd)
                     .then((response) => {
-                        console.log("response: ", response);
+                        // console.log("response: ", response);
                         this.images.unshift(response.data[0]);
                     })
                     .catch((error) => console.log("error: ", error));
@@ -70,7 +70,6 @@
             closeMe: function () {
                 console.log("Close me");
                 this.$data.selectedImage = null;
-                console.log("Close this: ", this.$data);
             },
 
             clickedImage: function (e) {
@@ -82,7 +81,7 @@
                         return x;
                     }
                 })[0].id;
-                console.log("images: ", selectedImage);
+                console.log("selected image-ID: ", selectedImage);
                 return selectedImage;
             },
         },
