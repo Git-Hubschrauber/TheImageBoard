@@ -28,9 +28,9 @@ module.exports.getNewImageInfo = (url) => {
 //
 //
 
-module.exports.getId = (url) => {
-    const q = `SELECT id FROM images WHERE url = ($1)`;
-    const params = [url];
+module.exports.getImageInfoById = (id) => {
+    const q = `SELECT * FROM images WHERE id = ($1)`;
+    const params = [id];
     return images.query(q, params);
 };
 

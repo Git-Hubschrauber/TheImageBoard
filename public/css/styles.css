@@ -1,7 +1,6 @@
 * {
     margin: 0;
 
-    box-sizing: border-box;
     position: relative;
 }
 
@@ -95,11 +94,65 @@ button {
 
 */
 
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.9);
+}
+
 .showImage {
     position: fixed;
     background: gray;
     top: 10%;
-    right: 10%;
+
     bottom: 10%;
-    left: 10%;
+
+    display: grid;
+    grid-template-columns: 5fr 3fr;
+}
+
+.singleImage {
+    position: relative;
+    margin-top: 0;
+    grid-column: 1 / span 1;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    border-right: 1px solid black;
+}
+
+.singleImage > img {
+    height: 100%;
+    object-fit: cover;
+}
+
+.imageInfo {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+table {
+    width: 100%;
+    margin: 25% 5%;
+    font-size: 18px;
+    border: 1px solid black;
+}
+
+tr {
+    line-height: 30px;
+    border: 10px solid black;
+}
+
+.close {
+    position: relative;
+    right: 50px;
+    bottom: 2%;
+    width: 100px;
+    height: 50px;
 }

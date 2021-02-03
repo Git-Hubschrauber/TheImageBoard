@@ -64,6 +64,15 @@ app.post("/upload", uploader.single("file"), s3.upload, (req, res) => {
         });
 });
 
+app.get("/modal/:id", (req, res) => {
+    console.log("req.params.id in /modal-get: ", req.params.id);
+    let id = req.params.id;
+    imageData.getImageInfoById(id).then((results) => {
+        console.log(results.rows);
+        res.json(results.rows);
+    });
+});
+
 app.listen(8080, () => {
     console.log("Server running ...");
 });

@@ -3,26 +3,66 @@
         template: "#modal",
         data: function () {
             return {
-                name: "Mario",
-                count1: 0,
-                count2: 0,
+                url: "",
+                username: "",
+                title: "",
+                description: "",
+                date: "",
             };
         }, //end of data
         props: ["imageid"],
         mounted: function () {
-            console.log("component: ", this);
-            console.log("component description: ", this.imageid);
+            console.log("component mounted selected imageId: ", this.imageid);
+            let id = this.imageid;
+            var self = this;
+            axios.get("/modal/" + id).then(function (response) {
+                let res = response.data[0];
+                console.log("response from component: ", res);
+                self.url = res.url;
+                self.username = res.username;
+                self.title = res.title;
+                self.description = res.description;
+                var d = new Date(res.created_at);
+                self.date = d.toLocaleDateString("en-GB");
+            });
         },
         methods: {
-            increaseCount: function () {
-                this.count2++;
-            },
             closeModal: function () {
                 // console.log("Close modal");
                 this.$emit("close");
             },
         },
-    });
+    }); // end of first component
+
+    //
+    //
+    //
+    Vue.component("second-component", {
+        template: "#comment",
+        data: function () {
+            return {
+                url: "",
+                username: "",
+                title: "",
+                description: "",
+                date: "",
+            };
+        }, //end of data
+        props: [""],
+        mounted: function () {
+            console.log("component2 mounted selected imageId");
+        },
+        methods: {
+            // closeModal: function () {
+            //     // console.log("Close modal");
+            //     this.$emit("close");
+            // },
+        },
+    }); // end of second component
+
+    //
+    //
+    //
     new Vue({
         el: "#main",
         data: {
