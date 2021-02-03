@@ -29,6 +29,7 @@ app.use(express.json());
 
 app.get("/images", (req, res) => {
     imageData.getAllInfos().then((results) => {
+        // console.log("getAllInfos: ", results.rows);
         res.json(results.rows);
     });
 });
@@ -64,11 +65,67 @@ app.post("/upload", uploader.single("file"), s3.upload, (req, res) => {
         });
 });
 
+//
+//
+//
+
 app.get("/modal/:id", (req, res) => {
     console.log("req.params.id in /modal-get: ", req.params.id);
     let id = req.params.id;
     imageData.getImageInfoById(id).then((results) => {
-        console.log(results.rows);
+        //console.log("getImageInfoById in modal:", results.rows);
+        res.json(results.rows);
+    });
+});
+
+//
+//
+//
+
+app.get("/comments/:id", (req, res) => {
+    console.log("req.params.id in /comments-get: ", req.params.id);
+    let imageId = req.params.id;
+    imageData.getAllCommentInfoById(imageId).then((results) => {
+        console.log("getAllCommentInfoById results: ", results.rows);
+        res.json(results.rows);
+    });
+});
+
+app.post("/comment", (req, res) => {
+    console.log("req.body in/comments/upload: ", req.body);
+
+    let imageId = req.body.imageId;
+
+    imageData
+        .insertNewComment(req.body.comment, req.body.username, req.body.imageId)
+        .then(() => {
+            console.log("InsertNewComment done");
+            if (req.body.comment) {
+                imageData
+                    .getNewCommentInfoById(imageId)
+                    .then((results) => {
+                        let data = results.rows;
+                        console.log("new comment data: ", data);
+                        res.json(data);
+                    })
+                    .catch((error) =>
+                        console.log("error in getNewCommentInfo: ", error)
+                    );
+            } else {
+                return res.json({ success: false });
+            }
+        });
+});
+
+//
+//
+//
+
+app.get("/more/:lastId", (req, res) => {
+    let lastId = req.params.lastId;
+    console.log("more route lastId", lastId);
+    imageData.getNextImages(lastId).then((results) => {
+        console.log("results.rows in more route: ", results.rows);
         res.json(results.rows);
     });
 });

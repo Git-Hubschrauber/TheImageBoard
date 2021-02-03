@@ -1,13 +1,24 @@
+DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS images;
 
 CREATE TABLE images(
     id SERIAL PRIMARY KEY,
     url VARCHAR NOT NULL,
-    username VARCHAR NOT NULL,
-    title VARCHAR NOT NULL,
+    username VARCHAR(20) NOT NULL,
+    title VARCHAR(100) NOT NULL,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE comments(
+    id SERIAL PRIMARY KEY,
+    comment VARCHAR(255) NOT NULL,
+    username VARCHAR(20) NOT NULL,
+    image_id INTEGER NOT NULL REFERENCES images(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 
 INSERT INTO images (url, username, title, description) VALUES (
     'https://s3.amazonaws.com/imageboard/jAVZmnxnZ-U95ap2-PLliFFF7TO0KqZm.jpg',
@@ -29,3 +40,4 @@ INSERT INTO images (url, username, title, description) VALUES (
     'To be or not to be',
     'That is the question.'
 );
+

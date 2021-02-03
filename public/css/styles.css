@@ -109,7 +109,7 @@ button {
     top: 10%;
 
     bottom: 10%;
-
+    overflow: hidden;
     display: grid;
     grid-template-columns: 5fr 3fr;
 }
@@ -126,33 +126,80 @@ button {
 
 .singleImage > img {
     height: 100%;
+    overflow: hidden;
     object-fit: cover;
 }
 
 .imageInfo {
     height: 100%;
     width: 100%;
-    display: flex;
+    display: flexbox;
     justify-content: center;
     flex-wrap: wrap;
 }
 
-table {
-    width: 100%;
-    margin: 25% 5%;
-    font-size: 18px;
-    border: 1px solid black;
+.table1Scroll {
+    overflow-y: scroll;
+    height: 30%;
+    width: 95%;
 }
 
-tr {
+.table1 {
+    width: 95%;
+    margin: 5% 5%;
+    font-size: 18px;
+    background: darkgray;
+
+    border: 15px solid darkgray;
+}
+
+.tr1 {
     line-height: 30px;
     border: 10px solid black;
 }
 
-.close {
-    position: relative;
-    right: 50px;
-    bottom: 2%;
-    width: 100px;
+.componentButtons {
+    position: absolute;
+    display: inline-flex;
+    width: 100%;
+    height: 52px;
+    bottom: 10px;
+}
+
+.delete {
+    float: right;
+    width: 25%;
     height: 50px;
+}
+.close {
+    float: left;
+
+    width: 25%;
+    height: 50px;
+}
+
+.comment {
+    position: relative;
+
+    height: 40%;
+    margin: 5%;
+    /* border: 1px solid black; */
+}
+.commentTable {
+    display: flexbox;
+    width: 100.2%;
+    background: darkgray;
+    /* border: 1px solid black; */
+}
+
+.comment-items {
+    width: 100%;
+    height: 100%;
+    max-height: 300px;
+    /* border: 1px solid black; */
+    overflow-y: scroll;
+    background: lightblue;
+}
+.table3 {
+    width: 100%;
 }

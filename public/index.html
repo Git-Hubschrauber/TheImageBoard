@@ -25,7 +25,7 @@
         <input class="input" v-model="username" type="text" name="username" placeholder="username">
         </div>
         <input class="fileInput" @change="fileSelectHandler"  type="file" name="file" accept="image/*">
-        <button @click.prevent="clickHandler">Submit</button>
+        <button type="button" @click.prevent="clickHandler">Submit</button>
     </form>
 
     <div></div>
@@ -35,7 +35,7 @@
             <h4 class="grid-title" >{{each.title}} </h4>
         </div>
     </div>
-
+    <button type="button" class="moreImages" v-if="showMoreButton" @click="clickMore">more</button>
     <first-component v-if="selectedImage" :imageid="selectedImage" @close = "closeMe" >
         
 
@@ -48,39 +48,77 @@
         <div class="overlay">
             <div class="showImage">
                 <div class="singleImage">
-                <img v-bind:src=url alt="">
+                    <img v-bind:src=url alt="">
                 </div>
                 <div class="imageInfo">
-                <table>
-                    <tr>
-                        <td>Title:</td>
-                        <td>{{title}}</td>
-                    </tr>
-                    <tr>
-                        <td>Uploaded by:</td>
-                        <td>{{username}}</td>
-                    </tr>
-                    <tr>
-                        <td>Description:</td>
-                        <td>{{description}}</td>
-                    </tr>
-                    <tr>
-                        <td>Upload date:</td>
-                        <td>{{date}}</td>
-                    </tr>
-                </table>
-
-                <second-component>
-                </second-component>
-                <button class="close" @click="closeModal">Close</button>
+                    <div class="table1Scroll">
+                    <table class="table1">
+                        <tr class="tr1">
+                            <td>Title:</td>
+                            <td>{{title}}</td>
+                        </tr>
+                        <tr class="tr1">
+                            <td>Uploaded by:</td>
+                            <td>{{username}}</td>
+                        </tr>
+                        <tr class="tr1">
+                            <td>Description:</td>
+                            <td>{{description}}</td>
+                        </tr>
+                        <tr class="tr1">
+                            <td>Upload date:</td>
+                            <td>{{date}}</td>
+                        </tr>
+                    </table>
+                    </div>
+                    <second-component v-if="imageid" :imageid2="imageid">
+                    </second-component>
+                    <div class="componentButtons">
+                   
+                    <button type="button" class="delete" @click="closeModal">Close</button>  
+                     <button type="button"class="close" @click="closeModal">Delete</button>
+                    
+                    
+                    </div>
+                   
                 </div>
+                 
             </div>
         </div>
     </script>
 
      <script type="text/x-template" id="comment">
-        <div class="comment">
-            <h1>COMMENT HERE</h1>
+        <div class="comment"> 
+            <table class="commentTable">
+                <tr>
+                    <td class="td2a">
+                        <input class="commentInput" type="text" v-model="comment" name="commentInput" id="commentInput" placeholder="comment">
+                    </td>
+
+                    <td class="td2b" rowspan="2">
+                        <button class="submitComment" type="button" @click="submitComment">Submit</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="td2a">
+                        <input class="commentInput" type="text" v-model="username" name="commentUsername" id="commentUsername" placeholder="username">
+                    </td>
+                </tr>
+            </table>
+
+            <div class="comment-items">
+                <table class="table3">
+                    <tr  v-for="each in comments">
+                        <td>
+                            {{each.comment}} 
+                        </td>
+                        <td>
+                             (comment by {{each.username}})
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </script>
 

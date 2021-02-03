@@ -8,7 +8,7 @@ if (process.env.DATABASE_URL) {
 }
 
 module.exports.getAllInfos = () => {
-    const q = `SELECT * FROM images ORDER BY created_at DESC`;
+    const q = `SELECT * FROM images ORDER BY created_at DESC LIMIT 3`;
     return images.query(q);
 };
 
@@ -36,17 +36,31 @@ module.exports.getImageInfoById = (id) => {
 
 //
 
-module.exports.getUsername = () => {
-    const q = `SELECT username FROM images`;
-    return images.query(q);
+module.exports.insertNewComment = (comment, username, imageId) => {
+    const q = `INSERT INTO comments (comment, username, image_id) VALUES ($1,$2,$3)`;
+    const params = [comment, username, imageId];
+    return images.query(q, params);
 };
 
-module.exports.getTitle = () => {
-    const q = `SELECT title FROM images`;
-    return images.query(q);
+module.exports.getAllCommentInfoById = (imageId) => {
+    const q = `SELECT * FROM comments WHERE image_id = ($1) ORDER BY created_at DESC`;
+    const params = [imageId];
+    return images.query(q, params);
 };
 
-module.exports.getDescription = () => {
-    const q = `SELECT description FROM images`;
-    return images.query(q);
+module.exports.getNewCommentInfoById = (imageId) => {
+    const q = `SELECT * FROM comments WHERE image_id = ($1)`;
+    const params = [imageId];
+    return images.query(q, params);
+};
+
+//
+//
+//
+
+module.exports.getNextImages = (lastId) => {
+    const q = `SELECT url, title, id, (SELECT id FROM images ORDER BY id ASC LIMIT 1) AS "lowestId" FROM images
+    WHERE id < ($1) ORDER BY id DESC LIMIT 3;`;
+    const params = [lastId];
+    return images.query(q, params);
 };
