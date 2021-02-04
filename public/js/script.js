@@ -12,24 +12,73 @@
         }, //end of data
         props: ["imageid"],
         mounted: function () {
-            console.log("component1 mounted selected imageId: ", this.imageid);
+            // console.log("component1 mounted selected imageId: ", this.imageid);
             let id = this.imageid;
             var self = this;
-            axios.get("/modal/" + id).then(function (response) {
-                let res = response.data[0];
-                // console.log("response from component1: ", res);
-                self.url = res.url;
-                self.username = res.username;
-                self.title = res.title;
-                self.description = res.description;
-                var d = new Date(res.created_at);
-                self.date = d.toLocaleDateString("en-GB");
-            });
+            if (!Number.isInteger(+id)) {
+                this.$emit("close");
+            }
+            axios
+                .get("/modal/" + id)
+                .then(function (response) {
+                    let res = response.data[0];
+                    // console.log("response from component1: ", res);
+                    self.url = res.url;
+                    self.username = res.username;
+                    self.title = res.title;
+                    self.description = res.description;
+                    var d = new Date(res.created_at);
+                    self.date = d.toLocaleDateString("en-GB");
+                })
+                .catch((error) => {
+                    console.log("error in modal-id: ", error);
+                    console.log("no entry1");
+                    this.$emit("close");
+                });
         },
+
+        watch: {
+            imageid: function () {
+                // console.log("Watcher1 triggered");
+                let id = this.imageid;
+                var self = this;
+                if (!Number.isInteger(+id)) {
+                    this.$emit("close");
+                }
+                axios
+                    .get("/modal/" + id)
+                    .then(function (response) {
+                        let res = response.data[0];
+                        // console.log("response from component1: ", res);
+
+                        self.url = res.url;
+                        self.username = res.username;
+                        self.title = res.title;
+                        self.description = res.description;
+                        var d = new Date(res.created_at);
+                        self.date = d.toLocaleDateString("en-GB");
+                    })
+                    .catch((error) => {
+                        console.log("error in modal-id: ", error);
+                        console.log("no entry2");
+                        this.$emit("close");
+                    });
+            },
+        },
+
         methods: {
             closeModal: function () {
                 // console.log("Close modal");
                 this.$emit("close");
+            },
+            deleteImage: function () {
+                this.$emit("delete");
+            },
+            clicknext: function () {
+                this.$emit("clicknext");
+            },
+            clickprevious: function () {
+                this.$emit("clickprevious");
             },
         },
     }); // end of first component
@@ -48,26 +97,37 @@
         }, //end of data
         props: ["imageid2"],
         mounted: function () {
-            console.log("component2 mounted");
+            // console.log("component2 mounted");
             let id = this.imageid2;
             var self = this;
             axios.get("/comments/" + id).then(function (response) {
-                // console.log("this inside axios", this);
-                // console.log("this/self inside axios", self);
                 console.log("response from comments: ", response.data);
                 self.comments = response.data;
                 // console.log("self images: ", self.images);
             });
         },
+
+        watch: {
+            imageid2: function () {
+                // console.log("Watcher1 triggered");
+                let id = this.imageid2;
+                var self = this;
+                axios.get("/comments/" + id).then(function (response) {
+                    console.log("response from comments: ", response.data);
+                    self.comments = response.data;
+                });
+            },
+        },
+
         methods: {
             submitComment: function () {
-                console.log("comment submitted: ", this);
+                // console.log("comment submitted: ", this);
                 let fd = {};
                 fd.comment = this.comment;
                 fd.username = this.username;
                 fd.imageId = this.imageid2;
 
-                console.log("comment fd: ", fd);
+                // console.log("comment fd: ", fd);
                 var self = this;
                 axios
                     .post("/comment", fd)
@@ -94,22 +154,35 @@
             description: "",
             username: "",
             file: null,
-            selectedImage: null,
+            selectedImage: location.hash.slice(1),
             showMoreButton: true,
         }, //data ends
 
         mounted: function () {
             console.log("vue instance has mounted");
             // console.log("this outside axios", this);
-            var self = this;
-            axios.get("/images").then(function (response) {
-                // console.log("this inside axios", this);
-                // console.log("this/self inside axios", self);
-                // console.log("response from images: ", response.data);
-                self.images = response.data;
-                // console.log("self images: ", self.images);
+
+            addEventListener("hashchange", () => {
+                this.selectedImage = location.hash.slice(1);
             });
-        },
+
+            var self = this;
+            axios
+                .get("/images")
+                .then(function (response) {
+                    // console.log("response from images: ", response.data);
+
+                    self.images = response.data;
+                    // console.log("self images: ", self.images);
+                    let res = response.data;
+                    if (res[res.length - 1].id == res[0].lowestId) {
+                        self.$data.showMoreButton = false;
+                    }
+                })
+                .catch((error) =>
+                    console.log("error in getting images:", error)
+                );
+        }, // end of mounted
 
         methods: {
             clickHandler: function () {
@@ -125,24 +198,55 @@
                         // console.log("response: ", response);
                         this.images.unshift(response.data[0]);
                     })
-                    .catch((error) => console.log("error: ", error));
+                    .catch((error) =>
+                        console.log("error in clickhandler: ", error)
+                    );
             },
             fileSelectHandler: function (e) {
-                console.log("fileSelectHandler here");
+                // console.log("fileSelectHandler here");
                 this.file = e.target.files[0];
             },
             closeMe: function () {
-                console.log("Close me");
+                // console.log("Close me");
+                location.hash = "";
                 this.$data.selectedImage = null;
             },
+
+            removeImage: function () {
+                var self = this;
+                // console.log("remove image clicked");
+                let id = location.hash.slice(1);
+                axios
+                    .get("/delete/" + id)
+                    .then(axios.get("/images"))
+                    .then(function (response) {
+                        self.images = response.data;
+                        // console.log(response.data);
+                        location.hash = "";
+                        self.$data.selectedImage = null;
+                        let res = response.data;
+                        if (res[res.length - 1].id == res[0].lowestId) {
+                            // console.log("hide moreButton");
+                            // console.log(self);
+                            self.$data.showMoreButton = false;
+                        }
+                    })
+                    .catch((error) =>
+                        console.log(
+                            "error in getting images after deleteImage:",
+                            error
+                        )
+                    );
+            },
+
             clickMore: function () {
-                console.log("clickMore triggered");
+                // console.log("clickMore triggered");
                 let lastId = this.$data.images[this.$data.images.length - 1].id;
-                console.log("lastId in clickMore", lastId);
+                // console.log("lastId in clickMore", lastId);
                 var self = this;
                 axios.get("/more/" + lastId).then(function (response) {
                     let res = response.data;
-                    console.log("response from clickmore: ", res);
+                    // console.log("response from clickmore: ", res);
                     // console.log("last added image id:", res[res.length - 1].id);
                     // console.log(
                     //     "last image in data:",
@@ -153,24 +257,35 @@
                         self.images.push(element);
                     });
                     if (res[res.length - 1].id == res[0].lowestId) {
-                        console.log("hide moreButton");
-                        console.log(self);
+                        // console.log("hide moreButton");
+                        // console.log(self);
                         self.$data.showMoreButton = false;
                     }
                 });
             },
-            // clickedImage: function (e) {
-            //     let url = e.target.currentSrc;
-            //     let that = this;
-            //     console.log("image clicked: ", url);
-            //     let selectedImage = that.images.filter((x) => {
-            //         if (x.url == url) {
-            //             return x;
-            //         }
-            //     })[0].id;
-            //     console.log("selected image-ID: ", selectedImage);
-            //     return selectedImage;
-            // },
+
+            displaynext: function () {
+                // console.log("Next clicked");
+                let id = location.hash.slice(1);
+                let self = this;
+                axios.get("/next/" + id).then((response) => {
+                    // console.log("response from next: ", response);
+                    let nextId = response.data[0].id;
+                    location.hash = Number(nextId);
+                    self.$data.selectedImage = Number(nextId);
+                });
+            },
+            displayprevious: function () {
+                // console.log("Previous clicked");
+                let id = location.hash.slice(1);
+                let self = this;
+                axios.get("/previous/" + id).then((response) => {
+                    // console.log("response from previous: ", response);
+                    let previousId = response.data[0].id;
+                    location.hash = Number(previousId);
+                    self.$data.selectedImage = Number(previousId);
+                });
+            },
         },
     });
 })();

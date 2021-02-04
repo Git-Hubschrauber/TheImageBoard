@@ -30,13 +30,15 @@
 
     <div></div>
     <div class="grid">
-        <div class="grid-item" v-if="images.length" v-for="each in images" @click="selectedImage = each.id" >
+        <div class="grid-item" v-if="images.length" v-for="each in images" >
+            <a :href="'#' + each.id">
             <img class="grid-image" v-bind:src=each.url v-bind:alt=each.title >
             <h4 class="grid-title" >{{each.title}} </h4>
+            </a>
         </div>
     </div>
     <button type="button" class="moreImages" v-if="showMoreButton" @click="clickMore">more</button>
-    <first-component v-if="selectedImage" :imageid="selectedImage" @close = "closeMe" >
+    <first-component v-if="selectedImage" :imageid="selectedImage" @close = "closeMe" @delete = "removeImage"  @clickprevious = "displayprevious" @clicknext = "displaynext">
         
 
     </first-component>
@@ -48,7 +50,14 @@
         <div class="overlay">
             <div class="showImage">
                 <div class="singleImage">
+                    <div class="control">
+                        <h1 class="previous" @click="clickprevious">&laquo</h1>
+                    </div>
                     <img v-bind:src=url alt="">
+                    <div class="control">
+                        <h1 class="next" @click="clicknext">&raquo</h1>
+                    </div>
+                    
                 </div>
                 <div class="imageInfo">
                     <div class="table1Scroll">
@@ -74,16 +83,14 @@
                     <second-component v-if="imageid" :imageid2="imageid">
                     </second-component>
                     <div class="componentButtons">
-                   
-                    <button type="button" class="delete" @click="closeModal">Close</button>  
-                     <button type="button"class="close" @click="closeModal">Delete</button>
-                    
-                    
+                        <button type="button" class="delete" @click="closeModal">Close</button>  
+                        <button type="button"class="close" @click="deleteImage">Delete</button>
                     </div>
                    
                 </div>
                  
             </div>
+           
         </div>
     </script>
 
@@ -92,7 +99,7 @@
             <table class="commentTable">
                 <tr>
                     <td class="td2a">
-                        <input class="commentInput" type="text" v-model="comment" name="commentInput" id="commentInput" placeholder="comment">
+                        <input id="btnsubmit" class="commentInput" type="text" v-model="comment" name="commentInput" placeholder="comment">
                     </td>
 
                     <td class="td2b" rowspan="2">
