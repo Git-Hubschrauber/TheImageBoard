@@ -8,7 +8,7 @@
 <body>
 <header class="page-header">
     <div>
-        <h1>MyImageBoard</h1>
+        <h1>TheImageBoard</h1>
     </div>
 </header>
 
@@ -17,7 +17,10 @@
 </div>
 
 
-<div id="main">
+<div id="main" >
+    
+    <!-- <h2 @click="checkForNewImages">Click for getting informed about new uploads</h1>
+    <h2 v-if="newImages" >New upload!</h1> -->
     <form>
         <div>
         <input class="input" v-model="title" type="text" name="title" placeholder="title">

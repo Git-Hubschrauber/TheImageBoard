@@ -1,20 +1,32 @@
 * {
     margin: 0;
-
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+        "Lucida Sans", Arial, sans-serif;
     position: relative;
 }
 
 body {
-    background: lightblue;
+    background: lightgray;
 }
 
 header {
     width: 100vw;
     padding: 20px;
-    background: blue;
+    background: black;
+    color: white;
     text-align: center;
     justify-content: center;
     display: flexbox;
+}
+
+h2 {
+    margin: 0vh 10vw;
+    background: white;
+    width: fit-content;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid black;
+    margin-top: 10px;
 }
 
 .latest {

@@ -137,6 +137,8 @@
                             fd
                         );
                         self.comments.unshift(fd);
+                        self.comment = "";
+                        self.username = "";
                     })
                     .catch((error) => console.log("error: ", error));
             },
@@ -156,6 +158,7 @@
             file: null,
             selectedImage: location.hash.slice(1),
             showMoreButton: true,
+            newImages: false,
         }, //data ends
 
         mounted: function () {
@@ -192,6 +195,12 @@
                 fd.append("description", this.description);
                 fd.append("username", this.username);
                 fd.append("file", this.file);
+
+                this.title = "";
+                this.description = "";
+                this.username = "";
+                this.file = "";
+
                 axios
                     .post("/upload", fd)
                     .then((response) => {
@@ -285,6 +294,25 @@
                     location.hash = Number(previousId);
                     self.$data.selectedImage = Number(previousId);
                 });
+            },
+
+            checkForNewImages: function () {
+                console.log("Klick");
+                var self = this;
+                var idNow = self.$data.images[0].id;
+
+                setInterval(function myCallback() {
+                    // Your code here
+                    // Parameters are purely optional.
+                    console.log("a");
+                    console.log("image now: ", idNow);
+                    axios.get("/images").then(function (response) {
+                        console.log(response.data);
+                        if (response.data[0].id > idNow) {
+                            self.$data.newImages = true;
+                        }
+                    });
+                }, 5000);
             },
         },
     });

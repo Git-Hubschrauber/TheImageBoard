@@ -3,9 +3,9 @@ const fs = require("fs");
 
 let secrets;
 if (process.env.NODE_ENV == "production") {
-    secrets = process.env; // in prod the secrets are environment variables
+    secrets = process.env;
 } else {
-    secrets = require("./secrets"); // in dev they are in secrets.json which is listed in .gitignore
+    secrets = require("./secrets");
 }
 
 const s3 = new aws.S3({
@@ -33,13 +33,30 @@ exports.upload = (req, res, next) => {
 
     promise
         .then(() => {
-            // it worked!!!
             console.log("amazon upload complete!");
             next();
             fs.unlink(path, () => {});
         })
         .catch((err) => {
-            // uh oh
             console.log(err);
         });
+};
+
+module.exports.deleteFromAWS = async (link) => {
+    const filename = link.replace(
+        "https://s3.amazonaws.com/adoboimageboard2021/",
+        ""
+    );
+    const params = {
+        Bucket: "adoboimageboard2021",
+        Key: filename,
+    };
+    try {
+        await s3.deleteObject(params).promise();
+        console.log("image deleted");
+        return { success: true };
+    } catch (error) {
+        console.log("AWS deletion error", error);
+        return { success: false };
+    }
 };

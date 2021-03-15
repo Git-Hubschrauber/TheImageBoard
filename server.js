@@ -28,16 +28,15 @@ app.use(express.static("public"));
 app.use(express.json());
 
 app.get("/images", (req, res) => {
-    imageData.getAllInfos().then((results) => {
-        // console.log("getAllInfos: ", results.rows);
-        res.json(results.rows);
-    });
+    imageData
+        .getAllInfos()
+        .then((results) => {
+            res.json(results.rows);
+        })
+        .catch((err) => console.log("error in getAllInfos", err));
 });
 
 app.post("/upload", uploader.single("file"), s3.upload, (req, res) => {
-    // console.log("req.body in /upload: ", req.body);
-    // console.log("req.file in /upload: ", req.file);
-
     let url =
         "https://s3.amazonaws.com/adoboimageboard2021/" + req.file.filename;
     imageData
@@ -53,7 +52,6 @@ app.post("/upload", uploader.single("file"), s3.upload, (req, res) => {
                     .getNewImageInfo(url)
                     .then((results) => {
                         let data = results.rows;
-                        // console.log("new image data: ", data);
                         res.json(data);
                     })
                     .catch((error) =>
@@ -68,17 +66,11 @@ app.post("/upload", uploader.single("file"), s3.upload, (req, res) => {
         });
 });
 
-//
-//
-//
-
 app.get("/modal/:id", (req, res) => {
-    // console.log("req.params.id in /modal-get: ", req.params.id);
     let id = req.params.id;
     imageData
         .getImageInfoById(id)
         .then((results) => {
-            //console.log("getImageInfoById in modal:", results.rows);
             res.json(results.rows);
         })
         .catch((error) => {
@@ -86,34 +78,26 @@ app.get("/modal/:id", (req, res) => {
         });
 });
 
-//
-//
-//
-
 app.get("/comments/:id", (req, res) => {
-    // console.log("req.params.id in /comments-get: ", req.params.id);
     let imageId = req.params.id;
-    imageData.getAllCommentInfoById(imageId).then((results) => {
-        // console.log("getAllCommentInfoById results: ", results.rows);
-        res.json(results.rows);
-    });
+    imageData
+        .getAllCommentInfoById(imageId)
+        .then((results) => {
+            res.json(results.rows);
+        })
+        .catch((err) => console.log("error in getAllCommentInfoById", err));
 });
 
 app.post("/comment", (req, res) => {
-    // console.log("req.body in/comments/upload: ", req.body);
-
     let imageId = req.body.imageId;
-
     imageData
         .insertNewComment(req.body.comment, req.body.username, req.body.imageId)
         .then(() => {
-            // console.log("InsertNewComment done");
             if (req.body.comment) {
                 imageData
                     .getNewCommentInfoById(imageId)
                     .then((results) => {
                         let data = results.rows;
-                        // console.log("new comment data: ", data);
                         res.json(data);
                     })
                     .catch((error) =>
@@ -125,33 +109,31 @@ app.post("/comment", (req, res) => {
         });
 });
 
-//
-//
-//
-
 app.get("/more/:lastId", (req, res) => {
     let lastId = req.params.lastId;
-    // console.log("more route lastId", lastId);
-    imageData.getNextImages(lastId).then((results) => {
-        // console.log("results.rows in more route: ", results.rows);
-        res.json(results.rows);
-    });
-});
-
-app.get("/delete/:id", (req, res) => {
-    // console.log("req.params.id in /comments-get: ", req.params.id);
-    let id = req.params.id;
     imageData
-        .deleteImagefromComments(id)
-        .then(() => imageData.deleteImagefromImages(id))
-        .then(() => imageData.getAllInfos())
+        .getNextImages(lastId)
         .then((results) => {
-            // console.log("deleted??: ", results);
             res.json(results.rows);
         })
-        .catch((error) => {
-            console.log("error in deleteImage: ", error);
-        });
+        .catch((err) => console.log("error in getNextImages", err));
+});
+
+app.get("/delete/:id", async (req, res) => {
+    let id = req.params.id;
+    let result = await imageData.getImageInfoById(id);
+    console.log("req delete: ", result.rows[0].url);
+    await s3.deleteFromAWS(result.rows[0].url);
+    // imageData
+    //     .deleteImagefromComments(id)
+    //     .then(() => imageData.deleteImagefromImages(id))
+    //     .then(() => imageData.getAllInfos())
+    //     .then((results) => {
+    //         res.json(results.rows);
+    //     })
+    //     .catch((error) => {
+    //         console.log("error in deleteImage: ", error);
+    //     });
 });
 
 app.get("/next/:id", (req, res) => {
@@ -159,7 +141,6 @@ app.get("/next/:id", (req, res) => {
     imageData
         .nextImageId(id)
         .then((results) => {
-            // console.log("nextimageId: ", results.rows);
             res.json(results.rows);
         })
         .catch((error) => {
@@ -172,7 +153,6 @@ app.get("/previous/:id", (req, res) => {
     imageData
         .previousImageId(id)
         .then((results) => {
-            // console.log("previousimageId: ", results);
             res.json(results.rows);
         })
         .catch((error) => {
@@ -180,6 +160,6 @@ app.get("/previous/:id", (req, res) => {
         });
 });
 
-app.listen(8080, () => {
+app.listen(process.env.PORT || 8080, () => {
     console.log("Server running ...");
 });
