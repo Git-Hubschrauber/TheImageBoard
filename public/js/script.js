@@ -157,7 +157,7 @@
             username: "",
             file: null,
             selectedImage: location.hash.slice(1),
-            showMoreButton: true,
+            showMoreButton: false,
             newImages: false,
         }, //data ends
 
