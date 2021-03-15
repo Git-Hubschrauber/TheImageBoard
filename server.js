@@ -122,7 +122,6 @@ app.get("/more/:lastId", (req, res) => {
 app.get("/delete/:id", async (req, res) => {
     let id = req.params.id;
     let result = await imageData.getImageInfoById(id);
-    console.log("req delete: ", result.rows[0].url);
     await s3.deleteFromAWS(result.rows[0].url);
     imageData
         .deleteImagefromComments(id)
