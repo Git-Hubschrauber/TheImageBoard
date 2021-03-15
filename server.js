@@ -124,16 +124,16 @@ app.get("/delete/:id", async (req, res) => {
     let result = await imageData.getImageInfoById(id);
     console.log("req delete: ", result.rows[0].url);
     await s3.deleteFromAWS(result.rows[0].url);
-    // imageData
-    //     .deleteImagefromComments(id)
-    //     .then(() => imageData.deleteImagefromImages(id))
-    //     .then(() => imageData.getAllInfos())
-    //     .then((results) => {
-    //         res.json(results.rows);
-    //     })
-    //     .catch((error) => {
-    //         console.log("error in deleteImage: ", error);
-    //     });
+    imageData
+        .deleteImagefromComments(id)
+        .then(() => imageData.deleteImagefromImages(id))
+        .then(() => imageData.getAllInfos())
+        .then((results) => {
+            res.json(results.rows);
+        })
+        .catch((error) => {
+            console.log("error in deleteImage: ", error);
+        });
 });
 
 app.get("/next/:id", (req, res) => {
